@@ -1,0 +1,57 @@
+% Custom class for Pick and Place operations
+classdef PickAndPlace < handle
+    methods (Static)
+        function qAfterPick = OneRobotPickBrick(robot,qCurr,brick,steps)
+            posRdyBrick = brick.GetBrickPose() * transl(0,0,-0.07);
+            posBrick = brick.GetBrickPose() * transl(0,0,-0.035);
+            
+            qRdyBrick = robot.model.ikcon(posRdyBrick,qCurr);
+            qBrick = robot.model.ikcon(posBrick,qRdyBrick);
+            
+            MoveIt.MoveOneRobot(robot,qCurr,qRdyBrick,steps);
+            MoveIt.MoveOneRobot(robot,qRdyBrick,qBrick,steps);
+            MoveIt.MoveOneRobotAndBrick(robot,qBrick,qRdyBrick,steps,brick);
+            
+            qAfterPick = qRdyBrick;
+        end
+        
+        function qAfterPlace = OneRobotPlaceBrick(robot,qCurr,grabBrick,targetBrick,steps)
+            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
+            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+            
+            qRdyTargetBrick = robot.model.ikcon(posRdyTargetBrick,qCurr);
+            qTargetBrick = robot.model.ikcon(posTargetBrick,qRdyTargetBrick);
+            
+            MoveIt.MoveOneRobotAndBrick(robot,qCurr,qRdyTargetBrick,steps,grabBrick);
+            MoveIt.MoveOneRobotAndBrick(robot,qRdyTargetBrick,qTargetBrick,steps,grabBrick);
+            MoveIt.MoveOneRobot(robot,qTargetBrick,qRdyTargetBrick,steps);
+            
+            qAfterPlace = qRdyTargetBrick;
+        end
+
+        function [qAfterPick1,qAfterPick2] = TwoRobotPickBrick(robot1,qCurr1,brick1,robot2,qCurr2,brick2,steps)
+            posRdyBrick1 = brick1.GetBrickPose() * transl(0,0,-0.07);
+            posRdyBrick2 = brick2.GetBrickPose() * transl(0,0,-0.07);
+            
+            posBrick = brick.GetBrickPose() * transl(0,0,-0.035);
+            
+            qRdyBrick = robot.model.ikcon(posRdyBrick,qCurr);
+            
+            qBrick = robot.model.ikcon(posBrick,qRdyBrick);
+            
+            MoveIt.MoveOneRobot(robot,qCurr,qRdyBrick,steps);
+            MoveIt.MoveOneRobot(robot,qRdyBrick,qBrick,steps);
+            MoveIt.MoveOneRobotAndBrick(robot,qBrick,qRdyBrick,steps,brick);
+            
+            
+            
+            qAfterPick = qRdyBrick;
+        end
+        
+        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrick()
+        end
+        
+        function [qAfterPick,qAfterPlace] = RobotsOnePickOnePlace()
+        end
+    end
+end
