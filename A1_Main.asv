@@ -1,0 +1,125 @@
+clear all; clf; clc;
+
+%% Initialise UR3 model and its base position 
+myUR3 = UR3(0);
+myUR3.model.base = transl(0.4, 0, 0);
+myUR3.PlotAndColourRobot();
+
+%% Initialise UR5 Linear model and its base position
+linearUR5 = LinearUR5(0);
+linearUR5.model.base = transl(-0.75, 0.35, -0.025) * trotx(pi/2) * troty(pi);
+linearUR5.PlotAndColourRobot();
+
+hold on;
+
+%% Initialise the bricks and its position
+Brick1 = Brick(transl(0, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Center
+Brick2 = Brick(transl(0.2, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Right
+Brick3 = Brick(transl(-0.2, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Left
+Brick4 = Brick(transl(0, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up
+Brick5 = Brick(transl(0, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down
+Brick6 = Brick(transl(0.2, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up-Right
+Brick7 = Brick(transl(-0.2, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up-Left
+Brick8 = Brick(transl(-0.2, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down-Left
+Brick9 = Brick(transl(0.2, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down-Right
+
+Brick1.PlotBrickModel();
+Brick2.PlotBrickModel();
+Brick3.PlotBrickModel();
+Brick4.PlotBrickModel();
+Brick5.PlotBrickModel();
+Brick6.PlotBrickModel();
+Brick7.PlotBrickModel();
+Brick8.PlotBrickModel();
+Brick9.PlotBrickModel();
+
+%% 
+input('Press Enter to start');
+
+% Steps number
+steps = 100;
+
+% Initial q and Ready q
+% UR3:
+qInitUR3 = myUR3.model.getpos();
+qHomeUR3 = deg2rad([0 22 90 -22 -90 180]);
+
+% UR5:
+qInitUR5 = linearUR5.model.getpos();
+qHomeUR5 = deg2rad([0 0 18 -90 -18 90 180]);
+
+% Move robot to Home position
+MoveIt.MoveTwoRobot(myUR3,qInitUR3,qHomeUR3,linearUR5,qInitUR5,qHomeUR5,steps);
+
+% Set current robot q
+qCurrUR3 = qHomeUR3;
+qCurrUR5 = qHomeUR5;
+
+%% Pick up Brick 6
+Pick
+
+
+% % Get Brick 6 position and ready position
+% posRBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.07);
+% posBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.035);
+% 
+% % Get Brick 6 q and ready q
+% qRBrick6 = myUR3.model.ikcon(posRBrick6,qCurrUR3);
+% qBrick6 = myUR3.model.ikcon(posBrick6,qRBrick6);
+% 
+% % Move robot to pick up Brick 6
+% MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick6,steps);
+% qCurrUR3 = qRBrick6;
+% MoveIt.MoveOneRobot(myUR3,qCurrUR3,qBrick6,steps);
+% qCurrUR3 = qBrick6;
+% MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick6,steps,Brick6);
+% qCurrUR3 = qRBrick6;
+
+%% Place Brick 6 onto Brick 2
+posRBrick2 = Brick2.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
+posBrick2 = Brick2.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+
+qRBrick2 = myUR3.model.ikcon(posRBrick2,qCurrUR3);
+qBrick2 = myUR3.model.ikcon(posBrick2,qRBrick2);
+
+MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick2,steps,Brick6);
+qCurrUR3 = qRBrick2;
+MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qBrick2,steps,Brick6);
+qCurrUR3 = qBrick2;
+MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick2,steps);
+qCurrUR3 = qRBrick2;
+
+%% Pick up Brick 9
+% Get Brick 9 position and ready position
+posRBrick9 = Brick9.GetBrickPose() * transl(0,0,-0.07);
+posBrick9 = Brick9.GetBrickPose() * transl(0,0,-0.035);
+
+% Get Brick 9 q and ready q
+qRBrick9 = myUR3.model.ikcon(posRBrick9,qCurrUR3);
+qBrick9 = myUR3.model.ikcon(posBrick9,qRBrick9);
+
+% Move robot to pick up Brick 9
+MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick9,steps);
+qCurrUR3 = qRBrick9;
+MoveIt.MoveOneRobot(myUR3,qCurrUR3,qBrick9,steps);
+qCurrUR3 = qBrick9;
+MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick9,steps,Brick9);
+qCurrUR3 = qRBrick9;
+
+%% Place Brick 9 onto Brick 6
+posRBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
+posBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+
+qRBrick6 = myUR3.model.ikcon(posRBrick6,qCurrUR3);
+qBrick6 = myUR3.model.ikcon(posBrick6,qRBrick6);
+
+MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick6,steps,Brick9);
+qCurrUR3 = qRBrick6;
+MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qBrick6,steps,Brick9);
+qCurrUR3 = qBrick6;
+MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick6,steps);
+qCurrUR3 = qRBrick6;
+
+%% Move Two Robot
+
+
