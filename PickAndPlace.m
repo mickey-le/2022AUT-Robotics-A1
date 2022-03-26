@@ -3,6 +3,8 @@ classdef PickAndPlace < handle
     properties (Constant)
         rdyOffsetUR3 = -0.07;
         brkOffsetUR3 = -0.035;
+        rdyOffsetUR5 = -0.12;
+        brkOffsetUR5 = -0.085;
     end
     
     enumeration
@@ -42,41 +44,41 @@ classdef PickAndPlace < handle
             qAfterPlace = qRdyTargetBrick;
         end
         
-        function [qAfterPick1,qAfterPick2] = TwoRobotPickBrick(robot1,qCurr1,brick1,robot2,qCurr2,brick2,steps)
+        function [qAfterPick1,qAfterPick2] = TwoRobotPickBrick(robotUR3,qCurrUR3,brick1,robotUR5,qCurrUR5,brick2,steps)
             % Acquire pick up positions
             posRdyBrick1 = brick1.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
-            posRdyBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
+            posRdyBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR5);
             posBrick1 = brick1.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
-            posBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
+            posBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR5);
             % Compute pick up q
-            qRdyBrick1 = robot1.model.ikcon(posRdyBrick1,qCurr1);
-            qRdyBrick2 = robot2.model.ikcon(posRdyBrick2,qCurr2);
-            qBrick1 = robot1.model.ikcon(posBrick1,qRdyBrick1);
-            qBrick2 = robot2.model.ikcon(posBrick2,qRdyBrick2);
+            qRdyBrick1 = robotUR3.model.ikcon(posRdyBrick1,qCurrUR3);
+            qRdyBrick2 = robotUR5.model.ikcon(posRdyBrick2,qCurrUR5);
+            qBrick1 = robotUR3.model.ikcon(posBrick1,qRdyBrick1);
+            qBrick2 = robotUR5.model.ikcon(posBrick2,qRdyBrick2);
             % Place down bricks
-            MoveIt.MoveTwoRobot(robot1,qCurr1,qRdyBrick1,robot2,qCurr2,qRdyBrick2,steps);
-            MoveIt.MoveTwoRobot(robot1,qRdyBrick1,qBrick1,robot2,qRdyBrick2,qBrick2,steps);
-            MoveIt.MoveTwoRobotAndTwoBrick(robot1,qBrick1,qRdyBrick1,robot2,qBrick2,qRdyBrick2,steps,brick1,brick2);
+            MoveIt.MoveTwoRobot(robotUR3,qCurrUR3,qRdyBrick1,robotUR5,qCurrUR5,qRdyBrick2,steps);
+            MoveIt.MoveTwoRobot(robotUR3,qRdyBrick1,qBrick1,robotUR5,qRdyBrick2,qBrick2,steps);
+            MoveIt.MoveTwoRobotAndTwoBrick(robotUR3,qBrick1,qRdyBrick1,robotUR5,qBrick2,qRdyBrick2,steps,brick1,brick2);
             % Update q
             qAfterPick1 = qRdyBrick1;
             qAfterPick2 = qRdyBrick2;
         end
         
-        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrickOnBrick(robot1,qCurr1,grabBrick1,targetBrick1,robot2,qCurr2,grabBrick2,targetBrick2,steps)
+        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrickOnBrick(robotUR3,qCurrUR3,grabBrickUR3,targetBrick1,robotUR5,qCurrUR5,grabBrickUR5,targetBrick2,steps)
             % Acquire place down positions
             posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
-            posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
+            posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR5 - Brick.height);
             posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
-            posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
+            posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR5 - Brick.height);
             % Compute place down q
-            qRdyTargetBrick1 = robot1.model.ikcon(posRdyTargetBrick1,qCurr1);
-            qRdyTargetBrick2 = robot2.model.ikcon(posRdyTargetBrick2,qCurr2);
-            qTargetBrick1 = robot1.model.ikcon(posTargetBrick1,qRdyTargetBrick1);
-            qTargetBrick2 = robot2.model.ikcon(posTargetBrick2,qRdyTargetBrick2);
+            qRdyTargetBrick1 = robotUR3.model.ikcon(posRdyTargetBrick1,qCurrUR3);
+            qRdyTargetBrick2 = robotUR5.model.ikcon(posRdyTargetBrick2,qCurrUR5);
+            qTargetBrick1 = robotUR3.model.ikcon(posTargetBrick1,qRdyTargetBrick1);
+            qTargetBrick2 = robotUR5.model.ikcon(posTargetBrick2,qRdyTargetBrick2);
             % Place down bricks
-            MoveIt.MoveTwoRobotAndTwoBrick(robot1,qCurr1,qRdyTargetBrick1,robot2,qCurr2,qRdyTargetBrick2,steps,grabBrick1,grabBrick2);
-            MoveIt.MoveTwoRobotAndTwoBrick(robot1,qRdyTargetBrick1,qTargetBrick1,robot2,qRdyTargetBrick2,qTargetBrick2,steps,grabBrick1,grabBrick2);
-            MoveIt.MoveTwoRobot(robot1,qTargetBrick1,qRdyTargetBrick1,robot2,qTargetBrick2,qRdyTargetBrick2,steps);
+            MoveIt.MoveTwoRobotAndTwoBrick(robotUR3,qCurrUR3,qRdyTargetBrick1,robotUR5,qCurrUR5,qRdyTargetBrick2,steps,grabBrickUR3,grabBrickUR5);
+            MoveIt.MoveTwoRobotAndTwoBrick(robotUR3,qRdyTargetBrick1,qTargetBrick1,robotUR5,qRdyTargetBrick2,qTargetBrick2,steps,grabBrickUR3,grabBrickUR5);
+            MoveIt.MoveTwoRobot(robotUR3,qTargetBrick1,qRdyTargetBrick1,robotUR5,qTargetBrick2,qRdyTargetBrick2,steps);
             % Update q
             qAfterPlace1 = qRdyTargetBrick1;
             qAfterPlace2 = qRdyTargetBrick2;

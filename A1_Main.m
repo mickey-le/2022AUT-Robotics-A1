@@ -1,7 +1,7 @@
 clear all; clf; clc;
 
 %% Initialise UR3 model and its base position 
-myUR3 = UR3(0);
+myUR3 = UR3();
 myUR3.model.base = transl(0.4, 0, 0);
 myUR3.PlotAndColourRobot();
 
