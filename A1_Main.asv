@@ -83,8 +83,6 @@ qCurrUR5 = qHomeUR5;
 [qCurrUR3,qCurrUR5] = PickAndPlace.TwoRobotPlaceBrick(myUR3,qCurrUR3,Brick9,Brick1,PickAndPlace.Top ...
     ,linearUR5,qCurrUR5,Brick2,Brick4,PickAndPlace.Top,steps);
 
-
-
 % UR3 pick Brick 6, UR5 pick Brick 5
 [qCurrUR3,qCurrUR5] = PickAndPlace.TwoRobotPickBrick(myUR3,qCurrUR3,Brick6,linearUR5,qCurrUR5,Brick5,steps);
 
@@ -100,17 +98,9 @@ qCurrUR5 = qHomeUR5;
 qCurrUR5 = PickAndPlace.UR5PickBrick(linearUR5,qCurrUR5,Brick8,steps);
 
 % UR5 place Brick 8 on Brick 5
-qCurrUR5 = PickAndPlace.UR5PlaceBrickOnBrick(linearUR5,qCurrUR5,Brick8,Brick5,steps);
+qCurrUR5 = PickAndPlace.UR5PlaceBrickOnBrick(linearUR5,qCurrUR5,Brick8,Brick5
 
-% UR5 pick Brick 3
-qCurrUR5 = PickAndPlace.UR5PickBrick(linearUR5,qCurrUR5,Brick3,steps);
 
-% UR5 place Brick 3 on Brick 8
-qCurrUR5 = PickAndPlace.UR5PlaceBrickOnBrick(linearUR5,qCurrUR5,Brick3,Brick8,steps);
 
-% UR5 pick Brick 7
-qCurrUR5 = PickAndPlace.UR5PickBrick(linearUR5,qCurrUR5,Brick7,steps);
 
-% UR5 place Brick 7 on Brick 2
-qCurrUR5 = PickAndPlace.UR5PlaceBrickOnBrick(linearUR5,qCurrUR5,Brick7,Brick2,steps);
-MoveIt.MoveOneRobot(linearUR5,qCurrUR5,qInitUR5,steps);
+

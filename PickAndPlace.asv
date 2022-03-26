@@ -23,7 +23,7 @@ classdef PickAndPlace < handle
             % Pick up brick
             MoveIt.MoveOneRobot(robot,qCurr,qRdyBrick,steps);
             MoveIt.MoveOneRobot(robot,qRdyBrick,qBrick,steps);
-            MoveIt.MoveUR3AndBrick(robot,qBrick,qRdyBrick,steps,brick);
+            MoveIt.MoveOneRobotAndBrick(robot,qBrick,qRdyBrick,steps,brick);
             % Update q
             qAfterPick = qRdyBrick;
         end
@@ -39,12 +39,12 @@ classdef PickAndPlace < handle
             % Pick up brick
             MoveIt.MoveOneRobot(robot,qCurr,qRdyBrick,steps);
             MoveIt.MoveOneRobot(robot,qRdyBrick,qBrick,steps);
-            MoveIt.MoveUR5AndBrick(robot,qBrick,qRdyBrick,steps,brick);
+            MoveIt.MoveOneRobotAndBrick(robot,qBrick,qRdyBrick,steps,brick);
             % Update q
             qAfterPick = qRdyBrick;
         end
         
-        % Move UR3 to place brick and update its q after pick
+        % Move aU to place brick and update its q after pick
         function qAfterPlace = UR3PlaceBrickOnBrick(robot,qCurr,grabBrick,targetBrick,steps)
             % Acquire place down position
             posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
@@ -53,24 +53,8 @@ classdef PickAndPlace < handle
             qRdyTargetBrick = robot.model.ikcon(posRdyTargetBrick,qCurr);
             qTargetBrick = robot.model.ikcon(posTargetBrick,qRdyTargetBrick);
             % Place down brick
-            MoveIt.MoveUR3AndBrick(robot,qCurr,qRdyTargetBrick,steps,grabBrick);
-            MoveIt.MoveUR3AndBrick(robot,qRdyTargetBrick,qTargetBrick,steps,grabBrick);
-            MoveIt.MoveOneRobot(robot,qTargetBrick,qRdyTargetBrick,steps);
-            % Update q
-            qAfterPlace = qRdyTargetBrick;
-        end
-        
-        % Move UR5 to place brick and update its q after pick
-        function qAfterPlace = UR5PlaceBrickOnBrick(robot,qCurr,grabBrick,targetBrick,steps)
-            % Acquire place down position
-            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR5 - Brick.height);
-            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR5 - Brick.height);
-            % Compute place down q
-            qRdyTargetBrick = robot.model.ikcon(posRdyTargetBrick,qCurr);
-            qTargetBrick = robot.model.ikcon(posTargetBrick,qRdyTargetBrick);
-            % Place down brick
-            MoveIt.MoveUR5AndBrick(robot,qCurr,qRdyTargetBrick,steps,grabBrick);
-            MoveIt.MoveUR5AndBrick(robot,qRdyTargetBrick,qTargetBrick,steps,grabBrick);
+            MoveIt.MoveOneRobotAndBrick(robot,qCurr,qRdyTargetBrick,steps,grabBrick);
+            MoveIt.MoveOneRobotAndBrick(robot,qRdyTargetBrick,qTargetBrick,steps,grabBrick);
             MoveIt.MoveOneRobot(robot,qTargetBrick,qRdyTargetBrick,steps);
             % Update q
             qAfterPlace = qRdyTargetBrick;

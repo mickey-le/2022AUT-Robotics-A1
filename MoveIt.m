@@ -1,7 +1,8 @@
 % Custom class for move robots and bricks
 classdef MoveIt < handle
     properties (Constant)
-        brkZOffset = 0.032;
+        brkZOffsetUR3 = 0.032;
+        brkZOffsetUR5 = 0.083;
     end
     methods (Static)
         % Move one robot
@@ -14,13 +15,26 @@ classdef MoveIt < handle
         end
         
         % Move one robot and brick at the same time
-        function MoveOneRobotAndBrick(robot,qCurr,qGoal,steps,brick)
+        function MoveUR3AndBrick(robot,qCurr,qGoal,steps,brick)
             qMatrix = jtraj(qCurr,qGoal,steps);
             for i=1:steps
                 robot.model.animate(qMatrix(i,:));
                 endEffPos = robot.model.fkine(qMatrix(i,:));
                 % 'Move' the brick parallel with the end effector pose
-                endEffPos(3,4) = endEffPos(3,4) - MoveIt.brkZOffset;
+                endEffPos(3,4) = endEffPos(3,4) - MoveIt.brkZOffsetUR3;
+                brick.MoveBrick(endEffPos);
+                drawnow();
+            end
+        end
+        
+        % Move one robot and brick at the same time
+        function MoveUR5AndBrick(robot,qCurr,qGoal,steps,brick)
+            qMatrix = jtraj(qCurr,qGoal,steps);
+            for i=1:steps
+                robot.model.animate(qMatrix(i,:));
+                endEffPos = robot.model.fkine(qMatrix(i,:));
+                % 'Move' the brick parallel with the end effector pose
+                endEffPos(3,4) = endEffPos(3,4) - MoveIt.brkZOffsetUR5;
                 brick.MoveBrick(endEffPos);
                 drawnow();
             end
@@ -46,9 +60,9 @@ classdef MoveIt < handle
                 robot2.model.animate(qMatrix2(i,:));
                 
                 endEff1Pos = robot1.model.fkine(qMatrix1(i,:));
-                endEff1Pos(3,4) = endEff1Pos(3,4) - MoveIt.brkZOffset;
+                endEff1Pos(3,4) = endEff1Pos(3,4) - MoveIt.brkZOffsetUR3;
                 endEff2Pos = robot2.model.fkine(qMatrix2(i,:));
-                endEff2Pos(3,4) = endEff2Pos(3,4) - MoveIt.brkZOffset;
+                endEff2Pos(3,4) = endEff2Pos(3,4) - MoveIt.brkZOffsetUR5;
                 
                 brick1.MoveBrick(endEff1Pos);
                 brick2.MoveBrick(endEff2Pos);
@@ -65,7 +79,7 @@ classdef MoveIt < handle
                 robotFree.model.animate(qMatrixFree(i,:));
                 
                 endEffBrickPos = robot.model.fkine(qMatrixBrick(i,:));
-                endEffBrickPos(3,4) = endEffBrickPos(3,4) - MoveIt.brkZOffset;
+                endEffBrickPos(3,4) = endEffBrickPos(3,4) - MoveIt.brkZOffsetUR3;
                 
                 brick.MoveBrick(endEffBrickPos);
                 drawnow();
