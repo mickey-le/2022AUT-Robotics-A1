@@ -55,18 +55,34 @@ MoveIt.MoveTwoRobot(myUR3,qInitUR3,qHomeUR3,linearUR5,qInitUR5,qHomeUR5,steps);
 qCurrUR3 = qHomeUR3;
 qCurrUR5 = qHomeUR5;
 
-%% Pick up Brick 6 and update current q
-qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick6,steps);
+% %% Pick up Brick 6 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick6,steps);
+% 
+% %% Place Brick 6 onto Brick 2 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPlaceBrick(myUR3,qCurrUR3,Brick6,Brick2,steps);
+% 
+% %% Pick up Brick 9 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick9,steps);
+% 
+% %% Place Brick 9 onto Brick 6 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPlaceBrickOnBrick(myUR3,qCurrUR3,Brick9,Brick6,steps);
 
-%% Place Brick 6 onto Brick 2 and update current q
-qCurrUR3 = PickAndPlace.OneRobotPlaceBrick(myUR3,qCurrUR3,Brick6,Brick2,steps);
+%% Build Wall Sequence
 
-%% Pick up Brick 9 and update current q
-qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick9,steps);
+% UR3 pick Brick 2, UR5 pick Brick 4
+[qCurrUR3,qCurrUR5] = PickAndPlace.TwoRobotPickBrick(myUR3,qCurrUR3,Brick2,linearUR5,qCurrUR5,Brick4,steps);
 
-%% Place Brick 9 onto Brick 6 and update current q
-qCurrUR3 = PickAndPlace.OneRobotPlaceBrick(myUR3,qCurrUR3,Brick9,Brick6,steps);
+% UR3 place Brick 2 on Brick 1, UR5 place Brick 4 next to Brick 1
+[qCurrUR3,qCurrUR5] = PickAndPlace.TwoRobotPlaceBrick(myUR3,qCurrUR3,Brick2,Brick1,PickAndPlace.Top ...
+    ,linearUR5,qCurrUR5,Brick4,Brick1,PickAndPlace.Left,steps);
 
-%% Move Two Robot
+
+
+
+
+
+
+
+
 
 

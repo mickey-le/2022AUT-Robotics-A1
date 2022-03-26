@@ -55,71 +55,20 @@ MoveIt.MoveTwoRobot(myUR3,qInitUR3,qHomeUR3,linearUR5,qInitUR5,qHomeUR5,steps);
 qCurrUR3 = qHomeUR3;
 qCurrUR5 = qHomeUR5;
 
-%% Pick up Brick 6
-Pick
-
-
-% % Get Brick 6 position and ready position
-% posRBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.07);
-% posBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.035);
+% %% Pick up Brick 6 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick6,steps);
 % 
-% % Get Brick 6 q and ready q
-% qRBrick6 = myUR3.model.ikcon(posRBrick6,qCurrUR3);
-% qBrick6 = myUR3.model.ikcon(posBrick6,qRBrick6);
+% %% Place Brick 6 onto Brick 2 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPlaceBrick(myUR3,qCurrUR3,Brick6,Brick2,steps);
 % 
-% % Move robot to pick up Brick 6
-% MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick6,steps);
-% qCurrUR3 = qRBrick6;
-% MoveIt.MoveOneRobot(myUR3,qCurrUR3,qBrick6,steps);
-% qCurrUR3 = qBrick6;
-% MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick6,steps,Brick6);
-% qCurrUR3 = qRBrick6;
-
-%% Place Brick 6 onto Brick 2
-posRBrick2 = Brick2.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-posBrick2 = Brick2.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
-
-qRBrick2 = myUR3.model.ikcon(posRBrick2,qCurrUR3);
-qBrick2 = myUR3.model.ikcon(posBrick2,qRBrick2);
-
-MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick2,steps,Brick6);
-qCurrUR3 = qRBrick2;
-MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qBrick2,steps,Brick6);
-qCurrUR3 = qBrick2;
-MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick2,steps);
-qCurrUR3 = qRBrick2;
-
-%% Pick up Brick 9
-% Get Brick 9 position and ready position
-posRBrick9 = Brick9.GetBrickPose() * transl(0,0,-0.07);
-posBrick9 = Brick9.GetBrickPose() * transl(0,0,-0.035);
-
-% Get Brick 9 q and ready q
-qRBrick9 = myUR3.model.ikcon(posRBrick9,qCurrUR3);
-qBrick9 = myUR3.model.ikcon(posBrick9,qRBrick9);
-
-% Move robot to pick up Brick 9
-MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick9,steps);
-qCurrUR3 = qRBrick9;
-MoveIt.MoveOneRobot(myUR3,qCurrUR3,qBrick9,steps);
-qCurrUR3 = qBrick9;
-MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick9,steps,Brick9);
-qCurrUR3 = qRBrick9;
-
-%% Place Brick 9 onto Brick 6
-posRBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-posBrick6 = Brick6.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
-
-qRBrick6 = myUR3.model.ikcon(posRBrick6,qCurrUR3);
-qBrick6 = myUR3.model.ikcon(posBrick6,qRBrick6);
-
-MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qRBrick6,steps,Brick9);
-qCurrUR3 = qRBrick6;
-MoveIt.MoveOneRobotAndBrick(myUR3,qCurrUR3,qBrick6,steps,Brick9);
-qCurrUR3 = qBrick6;
-MoveIt.MoveOneRobot(myUR3,qCurrUR3,qRBrick6,steps);
-qCurrUR3 = qRBrick6;
+% %% Pick up Brick 9 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPickBrick(myUR3,qCurrUR3,Brick9,steps);
+% 
+% %% Place Brick 9 onto Brick 6 and update current q
+% qCurrUR3 = PickAndPlace.OneRobotPlaceBrick(myUR3,qCurrUR3,Brick9,Brick6,steps);
 
 %% Move Two Robot
 
+% UR3 pick Brick 2, UR5 pick Brick 4
+[qCurrUR3, qCurrUR5] = PickAndPlace.TwoRobotPickBrick(myUR
 

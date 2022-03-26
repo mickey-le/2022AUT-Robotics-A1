@@ -5,7 +5,7 @@ classdef Brick < handle
         width = 0.132;
         height = 0.067;
     end
-    properties
+    properties (Access = private)
         pose;
         poseUpdate;
         

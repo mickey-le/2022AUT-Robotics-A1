@@ -1,11 +1,20 @@
 % Custom class for Pick and Place operations
 classdef PickAndPlace < handle
+    properties (Constant)
+        rdyOffsetUR3 = -0.07;
+        brkOffsetUR3 = -0.035;
+    end
+    
+    enumeration
+        Top, Left, Right, Front, Back;
+    end
+    
     methods (Static)
         % Move a robot to pick brick and update its q after pick
         function qAfterPick = OneRobotPickBrick(robot,qCurr,brick,steps)
             % Acquire pick up position
-            posRdyBrick = brick.GetBrickPose() * transl(0,0,-0.07);
-            posBrick = brick.GetBrickPose() * transl(0,0,-0.035);
+            posRdyBrick = brick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
+            posBrick = brick.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
             % Compute pick up q
             qRdyBrick = robot.model.ikcon(posRdyBrick,qCurr);
             qBrick = robot.model.ikcon(posBrick,qRdyBrick);
@@ -18,10 +27,10 @@ classdef PickAndPlace < handle
         end
         
         % Move a robot to place brick and update its q after pick
-        function qAfterPlace = OneRobotPlaceBrick(robot,qCurr,grabBrick,targetBrick,steps)
+        function qAfterPlace = OneRobotPlaceBrickOnBrick(robot,qCurr,grabBrick,targetBrick,steps)
             % Acquire place down position
-            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
+            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
             % Compute place down q
             qRdyTargetBrick = robot.model.ikcon(posRdyTargetBrick,qCurr);
             qTargetBrick = robot.model.ikcon(posTargetBrick,qRdyTargetBrick);
@@ -35,10 +44,10 @@ classdef PickAndPlace < handle
         
         function [qAfterPick1,qAfterPick2] = TwoRobotPickBrick(robot1,qCurr1,brick1,robot2,qCurr2,brick2,steps)
             % Acquire pick up positions
-            posRdyBrick1 = brick1.GetBrickPose() * transl(0,0,-0.07);
-            posRdyBrick2 = brick2.GetBrickPose() * transl(0,0,-0.07);
-            posBrick1 = brick1.GetBrickPose() * transl(0,0,-0.035);
-            posBrick2 = brick2.GetBrickPose() * transl(0,0,-0.035);
+            posRdyBrick1 = brick1.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
+            posRdyBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
+            posBrick1 = brick1.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
+            posBrick2 = brick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
             % Compute pick up q
             qRdyBrick1 = robot1.model.ikcon(posRdyBrick1,qCurr1);
             qRdyBrick2 = robot2.model.ikcon(posRdyBrick2,qCurr2);
@@ -53,12 +62,12 @@ classdef PickAndPlace < handle
             qAfterPick2 = qRdyBrick2;
         end
         
-        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrick(robot1,qCurr1,grabBrick1,targetBrick1,robot2,qCurr2,grabBrick2,targetBrick2,steps)
+        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrickOnBrick(robot1,qCurr1,grabBrick1,targetBrick1,robot2,qCurr2,grabBrick2,targetBrick2,steps)
             % Acquire place down positions
-            posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-            posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-            posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
-            posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+            posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
+            posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
+            posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
+            posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
             % Compute place down q
             qRdyTargetBrick1 = robot1.model.ikcon(posRdyTargetBrick1,qCurr1);
             qRdyTargetBrick2 = robot2.model.ikcon(posRdyTargetBrick2,qCurr2);
@@ -73,21 +82,80 @@ classdef PickAndPlace < handle
             qAfterPlace2 = qRdyTargetBrick2;
         end
         
-        function [qAfterPick,qAfterPlace] = RobotsOnePickOnePlace(robotPick,qCurrPick,brickPick,robotPlace,qCurrPlace,grabBrick,targetBrick,steps)
+        function [qAfterPick,qAfterPlace] = TwoRobotOnePickOnePlaceOnBrick(robotPick,qCurrPick,brickPick,robotPlace,qCurrPlace,grabBrick,targetBrick,steps)
             % Acquire pick up and place down positions
-            posRdyPickBrick = brickPick.GetBrickPose() * transl(0,0,-0.07);
-            posPickBrick = brickPick.GetBrickPose() * transl(0,0,-0.035);
-            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.07 - Brick.height);
-            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,-0.035 - Brick.height);
+            posRdyPickBrick = brickPick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3);
+            posPickBrick = brickPick.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3);
+            posRdyTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.rdyOffsetUR3 - Brick.height);
+            posTargetBrick = targetBrick.GetBrickPose() * transl(0,0,PickAndPlace.brkOffsetUR3 - Brick.height);
             % Compute pick up and place down q
             qRdyPickBrick = robotPick.model.ikcon(posRdyPickBrick,qCurrPick);
             qRdyTargetBrick = robotPlace.model.ikcon(posRdyTargetBrick,qCurrPlace);
             qPickBrick = robotPick.model.ikcon(posPickBrick,qRdyPickBrick);
             qTargetBrick = robotPlace.model.ikcon(posTargetBrick,qRdyTargetBrick);
             % Pick up and place down bricks
-            MoveIt.MoveTwoRobotAndOneBrick();
+            % Status: Pick Robot (Free), Place Robot (Brick)
+            MoveIt.MoveTwoRobotAndOneBrick(robotPick,qCurrPick,qRdyPickBrick,robotPlace,qCurrPlace,qRdyTargetBrick,steps,grabBrick);
+            MoveIt.MoveTwoRobotAndOneBrick(robotPick,qRdyPickBrick,qPickBrick,robotPlace,qRdyTargetBrick,qTargetBrick,steps,grabBrick);
+            % Status: Pick Robot (Brick), Place Robot (Free)
+            MoveIt.MoveTwoRobotAndOneBrick(robotPlace,qTargetBrick,qRdyTargetBrick,robotPick,qPickBrick,qRdyPickBrick,steps,brickPick);
             % Update q
+            qAfterPick = qRdyPickBrick;
+            qAfterPlace = qRdyTargetBrick;
+        end
+        
+        function [qAfterPlace1,qAfterPlace2] = TwoRobotPlaceBrick(robot1,qCurr1,grabBrick1,targetBrick1,placement1,robot2,qCurr2,grabBrick2,targetBrick2,placement2,steps)
+            % Placement options for both robots.
+            % Compute placement position for Robot 1
+            if (placement1 == PickAndPlace.Top)
+                posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, 0, PickAndPlace.brkOffsetUR3 - Brick.height);
+            elseif (placement1 == PickAndPlace.Left)
+                posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(-Brick.length, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick1 = targetBrick1.GetBrickPose() * transl(-Brick.length, 0, PickAndPlace.brkOffsetUR3);
+            elseif (placement1 == PickAndPlace.Right)
+                posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(Brick.length, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick1 = targetBrick1.GetBrickPose() * transl(Brick.length, 0, PickAndPlace.brkOffsetUR3);
+            elseif (placement1 == PickAndPlace.Front)
+                posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, Brick.width, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, Brick.width, PickAndPlace.brkOffsetUR3);
+            elseif (placement1 == PickAndPlace.Back)
+                posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.brkOffsetUR3);
+            else
+                error('Specify a position for brick placement');
+            end
+            % Compute placement position for Robot 2
+            if (placement2 == PickAndPlace.Top)
+                posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, 0, PickAndPlace.brkOffsetUR3 - Brick.height);
+            elseif (placement2 == PickAndPlace.Left)
+                posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(-Brick.length, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick2 = targetBrick2.GetBrickPose() * transl(-Brick.length, 0, PickAndPlace.brkOffsetUR3);
+            elseif (placement2 == PickAndPlace.Right)
+                posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(Brick.length, 0, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick2 = targetBrick2.GetBrickPose() * transl(Brick.length, 0, PickAndPlace.brkOffsetUR3);
+            elseif (placement2 == PickAndPlace.Front)
+                posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, Brick.width, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, Brick.width, PickAndPlace.brkOffsetUR3);
+            elseif (placement2 == PickAndPlace.Back)
+                posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.rdyOffsetUR3 - Brick.height);
+                posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.brkOffsetUR3);
+            else
+                error('RTB:Link:badarg', 'Specify a position for brick placement');
+            end
             
+            qRdyTargetBrick1 = robot1.model.ikcon(posRdyTargetBrick1,qCurr1);
+            qRdyTargetBrick2 = robot2.model.ikcon(posRdyTargetBrick2,qCurr2);
+            qTargetBrick1 = robot1.model.ikcon(posTargetBrick1,qRdyTargetBrick1);
+            qTargetBrick2 = robot2.model.ikcon(posTargetBrick2,qRdyTargetBrick2);
+            % Place down bricks
+            MoveIt.MoveTwoRobotAndTwoBrick(robot1,qCurr1,qRdyTargetBrick1,robot2,qCurr2,qRdyTargetBrick2,steps,grabBrick1,grabBrick2);
+            MoveIt.MoveTwoRobotAndTwoBrick(robot1,qRdyTargetBrick1,qTargetBrick1,robot2,qRdyTargetBrick2,qTargetBrick2,steps,grabBrick1,grabBrick2);
+            MoveIt.MoveTwoRobot(robot1,qTargetBrick1,qRdyTargetBrick1,robot2,qTargetBrick2,qRdyTargetBrick2,steps);
+            % Update q
+            qAfterPlace1 = qRdyTargetBrick1;
+            qAfterPlace2 = qRdyTargetBrick2;
         end
     end
 end

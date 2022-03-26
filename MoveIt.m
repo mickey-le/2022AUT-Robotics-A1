@@ -1,5 +1,8 @@
 % Custom class for move robots and bricks
 classdef MoveIt < handle
+    properties (Constant)
+        brkZOffset = 0.032;
+    end
     methods (Static)
         % Move one robot
         function MoveOneRobot(robot,qCurr,qGoal,steps)
@@ -17,7 +20,7 @@ classdef MoveIt < handle
                 robot.model.animate(qMatrix(i,:));
                 endEffPos = robot.model.fkine(qMatrix(i,:));
                 % 'Move' the brick parallel with the end effector pose
-                endEffPos(3,4) = endEffPos(3,4) - 0.032;
+                endEffPos(3,4) = endEffPos(3,4) - MoveIt.brkZOffset;
                 brick.MoveBrick(endEffPos);
                 drawnow();
             end
@@ -42,10 +45,10 @@ classdef MoveIt < handle
                 robot1.model.animate(qMatrix1(i,:));
                 robot2.model.animate(qMatrix2(i,:));
                 
-                endEff1Pos = robot.model.fkine(qMatrix1(i,:));
-                endEff1Pos(3,4) = endEff1Pos(3,4) - 0.032;
-                endEff2Pos = robot.model.fkine(qMatrix2(i,:));
-                endEff2Pos(3,4) = endEff2Pos(3,4) - 0.032;
+                endEff1Pos = robot1.model.fkine(qMatrix1(i,:));
+                endEff1Pos(3,4) = endEff1Pos(3,4) - MoveIt.brkZOffset;
+                endEff2Pos = robot2.model.fkine(qMatrix2(i,:));
+                endEff2Pos(3,4) = endEff2Pos(3,4) - MoveIt.brkZOffset;
                 
                 brick1.MoveBrick(endEff1Pos);
                 brick2.MoveBrick(endEff2Pos);
@@ -54,7 +57,7 @@ classdef MoveIt < handle
         end
         
         % Move two robots, one with brick and one without brick
-        function MoveTwoRobotAndOneBrick(robotBrick,qCurrBrick,qGoalBrick,robotFree,qCurrFree,qGoalFree,steps,brick)
+        function MoveTwoRobotAndOneBrick(robotFree,qCurrFree,qGoalFree,robotBrick,qCurrBrick,qGoalBrick,steps,brick)
             qMatrixBrick = jtraj(qCurrBrick,qGoalBrick,steps);
             qMatrixFree = jtraj(qCurrFree,qGoalFree,steps);
             for i=1:steps
@@ -62,7 +65,7 @@ classdef MoveIt < handle
                 robotFree.model.animate(qMatrixFree(i,:));
                 
                 endEffBrickPos = robot.model.fkine(qMatrixBrick(i,:));
-                endEffBrickPos(3,4) = endEffBrickPos(3,4) - 0.032;
+                endEffBrickPos(3,4) = endEffBrickPos(3,4) - MoveIt.brkZOffset;
                 
                 brick.MoveBrick(endEffBrickPos);
                 drawnow();
