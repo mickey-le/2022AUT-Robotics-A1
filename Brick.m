@@ -16,7 +16,6 @@ classdef Brick < handle
     
     methods
         function self = Brick(brickPose) 
-            
             self.SetBrickPose(brickPose);
         end
         
