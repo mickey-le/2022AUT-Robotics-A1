@@ -159,7 +159,6 @@ classdef PickAndPlace < handle
                 posRdyTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.rdyOffsetUR3 - Brick.height);
                 posTargetBrick1 = targetBrick1.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.brkOffsetUR3);
             else
-                error('Specify a position for brick placement');
             end
             % Compute placement position for Robot 2
             if (placement2 == PickAndPlace.Top)
@@ -178,7 +177,6 @@ classdef PickAndPlace < handle
                 posRdyTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.rdyOffsetUR5 - Brick.height);
                 posTargetBrick2 = targetBrick2.GetBrickPose() * transl(0, -Brick.width, PickAndPlace.brkOffsetUR5);
             else
-                error('RTB:Link:badarg', 'Specify a position for brick placement');
             end
             
             qRdyTargetBrick1 = robotUR3.model.ikcon(posRdyTargetBrick1,qCurrUR3);
