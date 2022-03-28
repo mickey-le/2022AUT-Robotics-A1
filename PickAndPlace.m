@@ -2,9 +2,9 @@
 classdef PickAndPlace < handle
     properties (Constant)
         rdyOffsetUR3 = -0.07;
-        brkOffsetUR3 = -0.035;
+        brkOffsetUR3 = -0.032;
         rdyOffsetUR5 = -0.11;
-        brkOffsetUR5 = -0.083;
+        brkOffsetUR5 = -0.085;
     end
     
     enumeration

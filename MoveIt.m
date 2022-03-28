@@ -2,7 +2,7 @@
 classdef MoveIt < handle
     properties (Constant)
         brkZOffsetUR3 = 0.032;
-        brkZOffsetUR5 = 0.083;
+        brkZOffsetUR5 = 0.085;
     end
     methods (Static)
         % Move one robot
