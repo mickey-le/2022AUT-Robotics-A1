@@ -36,14 +36,15 @@ classdef UR3 < handle
             name = ['UR_3_',datestr(now,'yyyymmddTHHMMSSFFF')];
             %     end
             
-            L1 = Link('d',0.1519,'a',0,'alpha',pi/2,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
-            L2 = Link('d',0,'a',-0.24365,'alpha',0,'offset',-pi/2,'qlim',[deg2rad(-180),deg2rad(180)]);
-            L3 = Link('d',0,'a',-0.21325,'alpha',0,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
-            L4 = Link('d',0.11235,'a',0,'alpha',pi/2,'offset',-pi/2,'qlim',[deg2rad(-180),deg2rad(180)]);
-            L5 = Link('d',0.08535,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
-            L6 = Link('d',0.08190,'a',0,'alpha',0,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
+            L1 = Link('theta',pi,'a',0,'alpha',pi/2,'offset',0,'qlim',[-0.8,0]); % Prismatic link
+            L2 = Link('d',0.1519,'a',0,'alpha',pi/2,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
+            L3 = Link('d',0,'a',-0.24365,'alpha',0,'offset',-pi/2,'qlim',[deg2rad(-180),deg2rad(180)]);
+            L4 = Link('d',0,'a',-0.21325,'alpha',0,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
+            L5 = Link('d',0.11235,'a',0,'alpha',pi/2,'offset',-pi/2,'qlim',[deg2rad(-180),deg2rad(180)]);
+            L6 = Link('d',0.08535,'a',0,'alpha',-pi/2,'offset',0,'qlim',[deg2rad(-180),deg2rad(180)]);
+            L7 = Link('d',0.08190,'a',0,'alpha',0,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
             
-            self.model = SerialLink([L1 L2 L3 L4 L5 L6],'name',name);
+            self.model = SerialLink([L1 L2 L3 L4 L5 L6 L7],'name',name);
         end
         %% PlotAndColourRobot
         % Given a robot index, add the glyphs (vertices and faces) and
