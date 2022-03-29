@@ -32,8 +32,8 @@ endEffPosFrontView = endEffFrontView(1:end-1,4);
 basePose = myUR3.model.base;
 basePos = basePose(1:end-1,4);
 % Operating radius
-opRadiusTop = norm(endEffPosTopView - basePos)
-opRadiusFront = norm(endEffPosFrontView - basePos)
+opUR3RadiusTop = norm(endEffPosTopView - basePos)
+opUR3RadiusFront = norm(endEffPosFrontView - basePos)
 
 %% Initialise the bricks and its position
 % Determine brick poses
