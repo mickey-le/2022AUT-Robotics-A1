@@ -4,7 +4,7 @@ classdef UR3 < handle
         model;
         
         %>
-        workspace = [-2 2 -2 2 -0.3 2];
+        workspace = [-2 2 -2 2 -0.326 2];
         
         %> Flag to indicate if gripper is used
 %         useGripper = false;
@@ -45,6 +45,8 @@ classdef UR3 < handle
             L7 = Link('d',0.08190,'a',0,'alpha',0,'offset',0,'qlim',[deg2rad(-360),deg2rad(360)]);
             
             self.model = SerialLink([L1 L2 L3 L4 L5 L6 L7],'name',name);
+            
+            self.model.base = self.model.base * transl(0,0,0) * rpy2tr(pi/2,0,0);
         end
         %% PlotAndColourRobot
         % Given a robot index, add the glyphs (vertices and faces) and
