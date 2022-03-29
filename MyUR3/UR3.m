@@ -1,3 +1,5 @@
+% My custom linear UR3
+% Xuan Lam Le - 13759319
 classdef UR3 < handle
     properties
         %> Robot model
