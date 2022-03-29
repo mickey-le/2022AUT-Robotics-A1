@@ -2,30 +2,38 @@ clear all; clf; clc;
 addpath 'Brick'
 addpath 'LinearUR3'
 addpath 'MyUR3'
+addpath 'Environment'
+hold on;
+%% Generate and plot the Environment
+Envi = Environment();
+Envi.PlotEnvironment();
 
 %% Initialise UR3 model and its base position 
 myUR3 = UR3();
-myUR3.model.base = transl(0.55, -0.35, -0.025) * rpy2tr(pi/2, 0, 0);
+myUR3.model.base = transl(0.65, -0.3, 0.34) * rpy2tr(pi/2, -pi/2, 0);
 myUR3.PlotAndColourRobot();
 
 %% Initialise UR5 Linear model and its base position
 linearUR5 = LinearUR5();
-linearUR5.model.base = transl(-0.6, 0.35, -0.025) * rpy2tr(pi/2, pi, 0);
+linearUR5.model.base = transl(-0.35, 0.3, 0.34) * rpy2tr(pi/2, pi/2, 0);
 linearUR5.PlotAndColourRobot();
 
-hold on;
-
 %% Initialise the bricks and its position
-Brick1 = Brick(transl(0, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Center
-Brick2 = Brick(transl(0.2, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Right
-Brick3 = Brick(transl(-0.2, 0, 0.01) * rpy2tr(pi, 0, pi/2)); % Left
-Brick4 = Brick(transl(0, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up
-Brick5 = Brick(transl(0, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down
-Brick6 = Brick(transl(0.2, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up-Right
-Brick7 = Brick(transl(-0.2, 0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Up-Left
-Brick8 = Brick(transl(-0.2, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down-Left
-Brick9 = Brick(transl(0.2, -0.4, 0.01) * rpy2tr(pi, 0, pi/2)); % Down-Right
+% Determine brick poses
+Brick1 = Brick(transl(0.2, 0, 0.37) * rpy2tr(pi, 0, -pi/4)); % Center
 
+Brick2 = Brick(transl(-0.2, -0.15, 0.37) * rpy2tr(pi, 0, -pi/4)); 
+Brick3 = Brick(transl(-0.5, -0.2, 0.37 + Brick.height) * rpy2tr(pi, 0, 0)); 
+Brick4 = Brick(transl(-1, -0.2, 0.37) * rpy2tr(pi, 0, pi/4)); 
+
+Brick5 = Brick(transl(-0.3, -0.5, 0.37) * rpy2tr(pi, 0, 0)); 
+Brick6 = Brick(transl(-0.7, -0.2, 0.37) * rpy2tr(pi, 0, pi/2)); 
+Brick7 = Brick(transl(-0.9, -0.5, 0.37) * rpy2tr(pi, 0, 0)); 
+
+Brick8 = Brick(transl(-0.5, -0.2, 0.37) * rpy2tr(pi, 0, pi/2));
+Brick9 = Brick(transl(-1.2, -0.3, 0.37) * rpy2tr(pi, 0, pi/2)); 
+
+% Plot bricks
 Brick1.PlotBrickModel();
 Brick2.PlotBrickModel();
 Brick3.PlotBrickModel();
@@ -35,6 +43,10 @@ Brick6.PlotBrickModel();
 Brick7.PlotBrickModel();
 Brick8.PlotBrickModel();
 Brick9.PlotBrickModel();
+
+%% Set goal
+Goal = Brick(transl(0.7, 0.25, 0.37) * rpy2tr(pi, 0, 0));
+Checkpoint = Brick(transl(0.2, 0, 0.37) * rpy2tr(pi, 0, pi/2));
 
 %% 
 input('Press Enter to start');
@@ -70,6 +82,8 @@ qCurrUR5 = qHomeUR5;
 % 
 % %% Place Brick 9 onto Brick 6 and update current q
 % qCurrUR3 = PickAndPlace.UR3PlaceBrickOnBrick(myUR3,qCurrUR3,Brick9,Brick6,steps);
+
+%% Official Build Wall Sequence
 
 %% Build Wall Sequence
 % UR3 pick Brick 2, UR5 pick Brick 4
