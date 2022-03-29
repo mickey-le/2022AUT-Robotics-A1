@@ -20,18 +20,30 @@ linearUR5 = LinearUR5();
 linearUR5.model.base = transl(-0.35, 0.3, 0.345) * rpy2tr(pi/2, pi/2, 0);
 linearUR5.PlotAndColourRobot();
 
+%% UR3 Operating Radius
+% Get end effector position
+qTopView = deg2rad([0 0 86.4 3.6 0 -90 0]);
+endEffTopView = myUR3.model.fkine(qTopView);
+endEffPosTopView = endEffTopView(1:end-1,4);
+qFrontView = deg2rad([0 0 0 0 0 0 0]);
+endEffFrontView = myUR3.model.fkine(qFrontView);
+endEffPosFrontView = endEffFrontView(1:end-1,4);
+% Get base position
+basePose = myUR3.model.base;
+basePos = basePose(1:end-1,4);
+% Operating radius
+opRadiusTop = norm(endEffPosTopView - basePos)
+opRadiusFront = norm(endEffPosFrontView - basePos)
+
 %% Initialise the bricks and its position
 % Determine brick poses
 Brick1 = Brick(transl(0.3, 0.1, 0.37) * rpy2tr(pi, 0, pi)); % Center
-
 Brick2 = Brick(transl(-0.15, -0.35, 0.37) * rpy2tr(pi, 0, pi)); 
 Brick3 = Brick(transl(-0.6, -0.2, 0.37 + Brick.height) * rpy2tr(pi, 0, pi)); 
 Brick4 = Brick(transl(-0.6, -0.4, 0.37) * rpy2tr(pi, 0, pi)); 
-
 Brick5 = Brick(transl(-0.3, -0.5, 0.37) * rpy2tr(pi, 0, pi)); 
 Brick6 = Brick(transl(-0.7, -0.2, 0.37) * rpy2tr(pi, 0, pi)); 
 Brick7 = Brick(transl(-1, -0.5, 0.37) * rpy2tr(pi, 0, pi)); 
-
 Brick8 = Brick(transl(-0.4, -0.2, 0.37) * rpy2tr(pi, 0, pi));
 Brick9 = Brick(transl(-1.1, -0.3, 0.37) * rpy2tr(pi, 0, pi)); 
 
@@ -45,6 +57,11 @@ Brick6.PlotBrickModel();
 Brick7.PlotBrickModel();
 Brick8.PlotBrickModel();
 Brick9.PlotBrickModel();
+
+% Show robot + brick setup
+figure('Name','Robot + Brick Setup');
+projSetup = imread('a1robotbricksetup.jpg');
+imshow(projSetup);
 
 %% Set goal
 Goal = Brick(transl(0.9, 0.07, 0.37 - Brick.height) * rpy2tr(pi, 0, pi));
