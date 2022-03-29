@@ -1,4 +1,7 @@
 clear all; clf; clc;
+addpath 'Brick'
+addpath 'LinearUR3'
+addpath 'MyUR3'
 
 %% Initialise UR3 model and its base position 
 myUR3 = UR3();
