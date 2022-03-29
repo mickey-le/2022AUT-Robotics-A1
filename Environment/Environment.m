@@ -11,7 +11,7 @@ classdef Environment < handle
     methods
         % Class constructor
         function self = Environment()
-            enviPose = transl(0,0,0) * rpy2tr(0,0,0);
+            enviPose = transl(0,-0.1,0.62) * rpy2tr(0,0,0);
             self.SetEnviPose(enviPose);
         end
         % Setter for environment pose
@@ -24,6 +24,8 @@ classdef Environment < handle
         end
         % Function for plotting the environment
         function PlotEnvironment(self)
+            surf([-3,-3;3,3],[-2.5,2;-2.5,2],[-0.316,-0.306;-0.316,-0.306],'CData',imread('concrete.jpg'),'FaceColor','texturemap');
+            hold on;
             [face,vertices,data] = plyread('FullEnvi.ply','tri');
             self.vertexCount = size(vertices,1);
             midPoint = sum(vertices)/self.vertexCount;
