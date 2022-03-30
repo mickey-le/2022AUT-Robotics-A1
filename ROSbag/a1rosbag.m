@@ -11,7 +11,7 @@ msgs = readMessages(selectBag);
 myUR3 = OrgUR3();
 myUR3.PlotAndColourRobot();
 qCurr = myUR3.model.getpos();
-steps = 50;
+steps = 100;
 
 qHome = deg2rad([0 -22 -90 22 90 180]);
 MoveIt.MoveOneRobot(myUR3,qCurr,qHome,steps);
@@ -25,4 +25,5 @@ for i=1:6003
     qCurr = qRobot;
 end
 
+disp('End');
 
