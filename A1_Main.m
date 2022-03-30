@@ -65,7 +65,7 @@ imshow(projSetup);
 
 %% Set goal
 Goal = Brick(transl(0.9, 0.07, 0.37 - Brick.height) * rpy2tr(pi, 0, pi));
-Checkpoint = Brick(transl(0.3, 0.1, 0.37 - Brick.height) * rpy2tr(pi, 0, pi));
+Checkpoint = Brick(transl(0.32, 0.1, 0.37 - Brick.height) * rpy2tr(pi, 0, pi));
 
 %% 
 input('Press Enter to start');
@@ -88,6 +88,10 @@ MoveIt.MoveTwoRobot(myUR3,qInitUR3,qHomeUR3,linearUR5,qInitUR5,qHomeUR5,steps);
 % Set current robot q
 qCurrUR3 = qHomeUR3;
 qCurrUR5 = qHomeUR5;
+
+%% Demo moving a brick 20mm
+% qCurrUR3 = PickAndPlace.UR3PickBrick(myUR3,qCurrUR3,Brick1,steps);
+% qCurrUR3 = PickAndPlace.UR3PlaceBrickOnBrick(myUR3,qCurrUR3,Brick1,Checkpoint,steps);
 
 %% Build Wall Sequence
 % UR3 pick Brick 1, UR5 pick Brick 2
